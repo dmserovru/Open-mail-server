@@ -1,0 +1,8 @@
+flask
+flask-login
+flask-sqlalchemy
+psycopg2-binary
+ldap3
+aiosmtpd
+python-dotenv
+cryptography 
