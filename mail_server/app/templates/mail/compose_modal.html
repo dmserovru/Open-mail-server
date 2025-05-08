@@ -1,0 +1,43 @@
+<div class="modal fade" id="composeModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Новое письмо</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('mail.send_email') }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Кому:</label>
+                        <input type="email" class="form-control" name="to" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Копия:</label>
+                        <input type="email" class="form-control" name="cc">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Тема:</label>
+                        <input type="text" class="form-control" name="subject">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Сообщение:</label>
+                        <textarea class="form-control" name="body" rows="10" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Вложения:</label>
+                        <input type="file" class="form-control" name="attachments" multiple>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-outline-primary" name="action" value="draft">
+                        <i class="bi bi-save"></i> Сохранить черновик
+                    </button>
+                    <button type="submit" class="btn btn-primary" name="action" value="send">
+                        <i class="bi bi-send"></i> Отправить
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> 

@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Редактирование пользователя - {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Боковое меню -->
+        <div class="col-md-2 sidebar bg-light p-0">
+            <div class="list-group list-group-flush">
+                <a href="{{ url_for('admin.dashboard') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-speedometer2"></i> Обзор
+                </a>
+                <a href="{{ url_for('admin.users') }}" class="list-group-item list-group-item-action active">
+                    <i class="bi bi-people"></i> Пользователи
+                </a>
+            </div>
+        </div>
+
+        <!-- Основной контент -->
+        <div class="col-md-10 p-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Редактирование пользователя</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('admin.edit_user', user_id=user.id) }}" method="POST">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Имя пользователя</label>
+                                    <input type="text" class="form-control" name="username" value="{{ user.username }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" name="email" value="{{ user.email }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Новый пароль</label>
+                                    <input type="password" class="form-control" name="password" placeholder="Оставьте пустым, чтобы не менять">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Тип аутентификации</label>
+                                    <select class="form-select" name="auth_type">
+                                        <option value="local" {% if user.auth_type == 'local' %}selected{% endif %}>Локальный</option>
+                                        <option value="ad" {% if user.auth_type == 'ad' %}selected{% endif %}>Active Directory</option>
+                                    </select>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input type="checkbox" class="form-check-input" name="is_active" id="is_active" 
+                                           {% if user.is_active %}checked{% endif %}>
+                                    <label class="form-check-label" for="is_active">Активен</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input type="checkbox" class="form-check-input" name="is_admin" id="is_admin"
+                                           {% if user.is_admin %}checked{% endif %}>
+                                    <label class="form-check-label" for="is_admin">Администратор</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                            <a href="{{ url_for('admin.users') }}" class="btn btn-secondary">Отмена</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Статистика пользователя -->
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Статистика использования</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <strong>Создан:</strong> {{ user.created_at.strftime('%d.%m.%Y %H:%M') }}
+                            </div>
+                            <div class="mb-3">
+                                <strong>Последний вход:</strong> 
+                                {% if user.last_login %}
+                                    {{ user.last_login.strftime('%d.%m.%Y %H:%M') }}
+                                {% else %}
+                                    Никогда
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <strong>Использование диска:</strong> 
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: {{ disk_usage }}%">
+                                        {{ disk_usage }}%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Почтовая активность</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <strong>Всего писем:</strong> {{ email_stats.total }}
+                            </div>
+                            <div class="mb-3">
+                                <strong>Отправлено сегодня:</strong> {{ email_stats.sent_today }}
+                            </div>
+                            <div class="mb-3">
+                                <strong>Получено сегодня:</strong> {{ email_stats.received_today }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

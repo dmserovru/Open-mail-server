@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Настройки{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group">
+                <a href="#password" class="list-group-item list-group-item-action active" data-bs-toggle="list">
+                    <i class="bi bi-key"></i> Пароль
+                </a>
+                <a href="#notifications" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                    <i class="bi bi-bell"></i> Уведомления
+                </a>
+                <a href="#signature" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                    <i class="bi bi-pencil"></i> Подпись
+                </a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="password">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Изменение пароля</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label">Текущий пароль</label>
+                                    <input type="password" class="form-control" name="current_password" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Новый пароль</label>
+                                    <input type="password" class="form-control" name="new_password" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Подтверждение пароля</label>
+                                    <input type="password" class="form-control" name="confirm_password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Изменить пароль</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="notifications">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Настройки уведомлений</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST">
+                                <div class="form-check mb-3">
+                                    <input type="checkbox" class="form-check-input" name="notifications_enabled" 
+                                           id="notifications_enabled" {% if current_user.notifications_enabled %}checked{% endif %}>
+                                    <label class="form-check-label" for="notifications_enabled">
+                                        Включить уведомления о новых письмах
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Сохранить настройки</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="signature">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Подпись в письмах</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label">Текст подписи</label>
+                                    <textarea class="form-control" name="email_signature" rows="5">{{ current_user.email_signature }}</textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Сохранить подпись</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Панель управления - Почтовый сервер{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Боковое меню -->
+        <div class="col-md-2 sidebar bg-light p-0">
+            <div class="list-group list-group-flush">
+                <a href="{{ url_for('admin.dashboard') }}" class="list-group-item list-group-item-action active">
+                    <i class="bi bi-speedometer2"></i> Обзор
+                </a>
+                <a href="{{ url_for('admin.users') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-people"></i> Пользователи
+                </a>
+                <a href="{{ url_for('admin.domains') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-globe"></i> Домены
+                </a>
+                <a href="{{ url_for('admin.mail_queues') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-inboxes"></i> Очереди
+                </a>
+                <a href="{{ url_for('admin.settings') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-gear"></i> Настройки
+                </a>
+                <a href="{{ url_for('admin.logs') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-journal-text"></i> Логи
+                </a>
+            </div>
+        </div>
+
+        <!-- Основной контент -->
+        <div class="col-md-10 p-4">
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Пользователи</h5>
+                            <h2>{{ stats.users_count }}</h2>
+                            <p class="text-muted">Активных: {{ stats.active_users }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Письма сегодня</h5>
+                            <h2>{{ stats.today_emails }}</h2>
+                            <p class="text-muted">Всего: {{ stats.total_emails }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Использование диска</h5>
+                            <h2>{{ stats.disk_usage }}%</h2>
+                            <p class="text-muted">{{ stats.disk_used }} / {{ stats.disk_total }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Очередь</h5>
+                            <h2>{{ stats.queue_size }}</h2>
+                            <p class="text-muted">Активных: {{ stats.active_deliveries }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Последние действия</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group">
+                                {% for action in recent_actions %}
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ action.description }}</h6>
+                                        <small>{{ action.timestamp }}</small>
+                                    </div>
+                                    <p class="mb-1">{{ action.details }}</p>
+                                    <small>{{ action.user }}</small>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Системные уведомления</h5>
+                        </div>
+                        <div class="card-body">
+                            {% for alert in system_alerts %}
+                            <div class="alert alert-{{ alert.type }}">
+                                <h6>{{ alert.title }}</h6>
+                                <p class="mb-0">{{ alert.message }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Почта - {{ current_user.email }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Боковое меню -->
+        <div class="col-md-2 sidebar bg-light p-0">
+            <div class="p-3">
+                <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#composeModal">
+                    <i class="bi bi-pencil"></i> Написать
+                </button>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="{{ url_for('mail.inbox') }}" class="list-group-item list-group-item-action {% if folder == 'inbox' %}active{% endif %}">
+                    <i class="bi bi-inbox"></i> Входящие
+                    {% if unread_count > 0 %}
+                    <span class="badge bg-primary float-end">{{ unread_count }}</span>
+                    {% endif %}
+                </a>
+                <a href="{{ url_for('mail.sent') }}" class="list-group-item list-group-item-action {% if folder == 'sent' %}active{% endif %}">
+                    <i class="bi bi-send"></i> Отправленные
+                </a>
+                <a href="{{ url_for('mail.drafts') }}" class="list-group-item list-group-item-action {% if folder == 'drafts' %}active{% endif %}">
+                    <i class="bi bi-file-earmark"></i> Черновики
+                </a>
+                <a href="{{ url_for('mail.spam') }}" class="list-group-item list-group-item-action {% if folder == 'spam' %}active{% endif %}">
+                    <i class="bi bi-exclamation-octagon"></i> Спам
+                </a>
+                <a href="{{ url_for('mail.trash') }}" class="list-group-item list-group-item-action {% if folder == 'trash' %}active{% endif %}">
+                    <i class="bi bi-trash"></i> Корзина
+                </a>
+            </div>
+        </div>
+
+        <!-- Список писем -->
+        <div class="col-md-3 p-0 border-end">
+            <div class="toolbar bg-light">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Поиск...">
+                    <button class="btn btn-outline-secondary" type="button">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="email-list">
+                {% for email in emails %}
+                <div class="email-preview {% if not email.read %}unread{% endif %}" 
+                     onclick="location.href='{{ url_for('mail.view_email', email_id=email.id) }}'">
+                    <div class="d-flex justify-content-between">
+                        <div class="fw-bold">{{ email.sender_name or email.sender }}</div>
+                        <small>{{ email.received_at|time_ago }}</small>
+                    </div>
+                    <div class="text-truncate">{{ email.subject }}</div>
+                    <div class="text-muted text-truncate">{{ email.body|striptags }}</div>
+                </div>
+                {% else %}
+                <div class="text-center text-muted p-4">
+                    <i class="bi bi-inbox h1"></i>
+                    <p>Нет писем</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Просмотр письма -->
+        <div class="col-md-7 p-0">
+            {% if selected_email %}
+            <div class="toolbar bg-light">
+                <div class="btn-group">
+                    <button class="btn btn-outline-secondary" title="Ответить">
+                        <i class="bi bi-reply"></i>
+                    </button>
+                    <button class="btn btn-outline-secondary" title="Переслать">
+                        <i class="bi bi-forward"></i>
+                    </button>
+                    <button class="btn btn-outline-secondary" title="Удалить">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                    <button class="btn btn-outline-secondary" title="Спам">
+                        <i class="bi bi-exclamation-octagon"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-4">
+                <h4>{{ selected_email.subject }}</h4>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <strong>От:</strong> {{ selected_email.sender }}
+                        <br>
+                        <strong>Кому:</strong> {{ selected_email.recipient }}
+                    </div>
+                    <div class="text-muted">
+                        {{ selected_email.received_at|datetime }}
+                    </div>
+                </div>
+                <hr>
+                <div class="email-content">
+                    {{ selected_email.body|safe }}
+                </div>
+            </div>
+            {% else %}
+            <div class="text-center text-muted p-5">
+                <i class="bi bi-envelope h1"></i>
+                <p>Выберите письмо для просмотра</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно создания письма -->
+{% include 'mail/compose_modal.html' %}
+{% endblock %} 
